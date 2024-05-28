@@ -1,4 +1,3 @@
-// MainActivity.java
 package com.example.chesstimerappproject;
 
 import android.os.Bundle;
@@ -12,24 +11,40 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private TextView timer1, timer2;
-    private Button startButton, pauseButton, resetButton;
+    private Button player1Button, player2Button;
+    private Button startButton, stopButton, resetButton;
 
     private Handler handler = new Handler();
-    private boolean isRunning = false;
-    private long startTime = 0;
+    private boolean isPlayer1Turn = true;
+    private long player1Time = 10 * 60 * 1000; // 10 minutes in milliseconds
+    private long player2Time = 10 * 60 * 1000; // 10 minutes in milliseconds
+    private boolean isTimerRunning = false;
 
     private Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            long millis = System.currentTimeMillis() - startTime;
-            int seconds = (int) (millis / 1000);
-            int minutes = seconds / 60;
-            seconds = seconds % 60;
-
-            timer1.setText(String.format("%02d:%02d", minutes, seconds));
-            timer2.setText(String.format("%02d:%02d", minutes, seconds));
-
-            handler.postDelayed(this, 500);
+            if (isPlayer1Turn) {
+                player1Time -= 1000;
+                if (player1Time <= 0) {
+                    timer1.setText("00:00");
+                    handler.removeCallbacks(this);
+                    return;
+                }
+                int minutes = (int) (player1Time / 1000) / 60;
+                int seconds = (int) (player1Time / 1000) % 60;
+                timer1.setText(String.format("%02d:%02d", minutes, seconds));
+            } else {
+                player2Time -= 1000;
+                if (player2Time <= 0) {
+                    timer2.setText("00:00");
+                    handler.removeCallbacks(this);
+                    return;
+                }
+                int minutes = (int) (player2Time / 1000) / 60;
+                int seconds = (int) (player2Time / 1000) % 60;
+                timer2.setText(String.format("%02d:%02d", minutes, seconds));
+            }
+            handler.postDelayed(this, 1000);
         }
     };
 
@@ -40,27 +55,57 @@ public class MainActivity extends AppCompatActivity {
 
         timer1 = findViewById(R.id.timer1);
         timer2 = findViewById(R.id.timer2);
+        player1Button = findViewById(R.id.player1Button);
+        player2Button = findViewById(R.id.player2Button);
         startButton = findViewById(R.id.startButton);
-        pauseButton = findViewById(R.id.pauseButton);
+        stopButton = findViewById(R.id.stopButton);
         resetButton = findViewById(R.id.resetButton);
 
-        startButton.setOnClickListener(new View.OnClickListener() {
+        // Initialize isTimerRunning to false
+        isTimerRunning = false;
+
+        player1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isRunning) {
-                    startTime = System.currentTimeMillis();
-                    handler.post(timerRunnable);
-                    isRunning = true;
+                if (!isPlayer1Turn) {
+                    isPlayer1Turn = true;
+                    handler.removeCallbacks(timerRunnable);
+                    if (isTimerRunning) {
+                        handler.post(timerRunnable);
+                    }
                 }
             }
         });
 
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+        player2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isRunning) {
+                if (isPlayer1Turn) {
+                    isPlayer1Turn = false;
                     handler.removeCallbacks(timerRunnable);
-                    isRunning = false;
+                    if (isTimerRunning) {
+                        handler.post(timerRunnable);
+                    }
+                }
+            }
+        });
+
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isTimerRunning) {
+                    isTimerRunning = true;
+                    handler.post(timerRunnable);
+                }
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isTimerRunning) {
+                    isTimerRunning = false;
+                    handler.removeCallbacks(timerRunnable);
                 }
             }
         });
@@ -68,11 +113,31 @@ public class MainActivity extends AppCompatActivity {
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.removeCallbacks(timerRunnable);
-                isRunning = false;
-                timer1.setText("00:00");
-                timer2.setText("00:00");
+                // Reset timer values
+                player1Time = 10 * 60 * 1000;
+                player2Time = 10 * 60 * 1000;
+
+                // Update timer text views
+                updateTimerText();
+
+                // Stop the timer if running
+                if (isTimerRunning) {
+                    isTimerRunning = false;
+                    handler.removeCallbacks(timerRunnable);
+                }
             }
         });
+    }
+
+
+    // Helper method to update timer text views
+    private void updateTimerText() {
+        int minutes1 = (int) (player1Time / 1000) / 60;
+        int seconds1 = (int) (player1Time / 1000) % 60;
+        timer1.setText(String.format("%02d:%02d", minutes1, seconds1));
+
+        int minutes2 = (int) (player2Time / 1000) / 60;
+        int seconds2 = (int) (player2Time / 1000) % 60;
+        timer2.setText(String.format("%02d:%02d", minutes2, seconds2));
     }
 }

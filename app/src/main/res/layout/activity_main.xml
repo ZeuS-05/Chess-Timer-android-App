@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/activity_main.xml -->
+<!-- activity_main.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Timer for Player 1 -->
+    <!-- Timer 1 -->
     <TextView
-        android:id="@+id/player1_timer"
+        android:id="@+id/timer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:text="10:00"
-        android:textColor="@android:color/black"
-        android:textSize="48sp" />
+        android:layout_marginTop="100dp"
+        android:text="00:00"
+        android:textSize="40sp"
+        android:textColor="#000000"/>
 
-    <!-- Timer for Player 2 -->
+    <!-- Timer 2 -->
     <TextView
-        android:id="@+id/player2_timer"
+        android:id="@+id/timer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/player1_timer"
+        android:layout_below="@id/timer1"
         android:layout_centerHorizontal="true"
-        android:padding="16dp"
-        android:text="10:00"
-        android:textColor="@android:color/black"
-        android:textSize="48sp" />
+        android:layout_marginTop="50dp"
+        android:text="00:00"
+        android:textSize="40sp"
+        android:textColor="#000000"/>
 
-    <!-- Button to Start/Stop Player 1 Timer -->
+    <!-- Start Button -->
     <Button
-        android:id="@+id/start_stop_player1"
+        android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/player2_timer"
+        android:layout_below="@id/timer2"
+        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Start Player 1" />
+        android:text="Start" />
 
-    <!-- Button to Start/Stop Player 2 Timer -->
+    <!-- Pause Button -->
     <Button
-        android:id="@+id/start_stop_player2"
+        android:id="@+id/pauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/start_stop_player1"
+        android:layout_below="@id/startButton"
+        android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Start Player 2" />
+        android:text="Pause" />
+
+    <!-- Reset Button -->
+    <Button
+        android:id="@+id/resetButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pauseButton"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="Reset" />
 
 </RelativeLayout>

@@ -10,14 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int TIMER_OPTION_ONE = 10 * 60 * 1000; // 10 minutes in milliseconds
+    private static final int TIMER_OPTION_TWO = 5 * 60 * 1000;  // 5 minutes in milliseconds
+
     private TextView timer1, timer2;
     private Button player1Button, player2Button;
-    private Button startButton, stopButton, resetButton;
+    private Button startButton, stopButton, resetButton, changeModeButton;
 
     private Handler handler = new Handler();
     private boolean isPlayer1Turn = true;
-    private long player1Time = 10 * 60 * 1000; // 10 minutes in milliseconds
-    private long player2Time = 10 * 60 * 1000; // 10 minutes in milliseconds
+    private long player1Time = TIMER_OPTION_ONE; // Default timer option 1
+    private long player2Time = TIMER_OPTION_ONE; // Default timer option 1
     private boolean isTimerRunning = false;
 
     private Runnable timerRunnable = new Runnable() {
@@ -60,9 +63,13 @@ public class MainActivity extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
         resetButton = findViewById(R.id.resetButton);
+        changeModeButton = findViewById(R.id.changeModeButton);
 
         // Initialize isTimerRunning to false
         isTimerRunning = false;
+
+        // Set initial timer values and update text
+        updateTimerText();
 
         player1Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Reset timer values
-                player1Time = 10 * 60 * 1000;
-                player2Time = 10 * 60 * 1000;
+                if (isPlayer1Turn) {
+                    player1Time = (player1Time == TIMER_OPTION_ONE) ? TIMER_OPTION_ONE : TIMER_OPTION_TWO;
+                } else {
+                    player2Time = (player2Time == TIMER_OPTION_ONE) ? TIMER_OPTION_ONE : TIMER_OPTION_TWO;
+                }
 
                 // Update timer text views
                 updateTimerText();
@@ -127,8 +137,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Set OnClickListener for changeModeButton
+        changeModeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Toggle between timer options
+                if (player1Time == TIMER_OPTION_ONE) {
+                    updateTimerValues(TIMER_OPTION_TWO);
+                } else {
+                    updateTimerValues(TIMER_OPTION_ONE);
+                }
+                // Reset timer if running
+                if (isTimerRunning) {
+                    isTimerRunning = false;
+                    handler.removeCallbacks(timerRunnable);
+                    handler.postDelayed(timerRunnable, 100); // Start the timer with updated values
+                }
+            }
+        });
     }
 
+    // Helper method to update timer values based on selected option
+    private void updateTimerValues(int selectedOption) {
+        switch (selectedOption) {
+            case TIMER_OPTION_ONE:
+                player1Time = TIMER_OPTION_ONE;
+                player2Time = TIMER_OPTION_ONE;
+                break;
+            case TIMER_OPTION_TWO:
+                player1Time = TIMER_OPTION_TWO;
+                player2Time = TIMER_OPTION_TWO;
+                break;
+            default:
+                // Default to TIMER_OPTION_ONE if invalid option is selected
+                player1Time = TIMER_OPTION_ONE;
+                player2Time = TIMER_OPTION_ONE;
+                break;
+        }
+        updateTimerText(); // Update the displayed timer values
+    }
 
     // Helper method to update timer text views
     private void updateTimerText() {

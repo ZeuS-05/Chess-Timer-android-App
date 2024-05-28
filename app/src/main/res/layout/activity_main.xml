@@ -75,4 +75,14 @@
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/stopButton"/>
 
+    <Button
+        android:id="@+id/changeModeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startButton"
+        android:layout_alignStart="@id/startButton"
+        android:layout_marginStart="219dp"
+        android:layout_marginTop="-567dp"
+        android:text="Change Mode" />
+
 </RelativeLayout>

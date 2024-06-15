@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:rotation="180"
+        android:text="10:00"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="250dp"
         android:textColor="@android:color/white"

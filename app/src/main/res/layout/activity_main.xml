@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/chessbackground"
     tools:context=".MainActivity">
+
 
     <TextView
         android:id="@+id/timer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:rotation="180"
-        android:text="10:00"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="250dp"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:textSize="30sp" />
 
     <TextView
@@ -25,7 +26,7 @@
         android:textSize="30sp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="300dp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/white"/>
 
     <Button
         android:id="@+id/player1Button"
@@ -35,6 +36,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-224dp"
         android:rotation="180"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:text="Player 1" />
 
     <Button
@@ -43,6 +46,8 @@
         android:layout_height="180dp"
         android:text="Player 2"
         android:layout_below="@id/timer2"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -52,6 +57,8 @@
         android:layout_below="@id/player2Button"
         android:layout_marginTop="21dp"
         android:layout_marginEnd="12dp"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:layout_toStartOf="@id/stopButton"
         android:text="Start" />
 
@@ -63,6 +70,8 @@
         android:layout_below="@id/player2Button"
         android:layout_marginTop="21dp"
         android:layout_marginEnd="12dp"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:layout_centerHorizontal="true"/>
 
     <Button
@@ -73,6 +82,8 @@
         android:layout_below="@id/player2Button"
         android:layout_marginTop="21dp"
         android:layout_marginEnd="12dp"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:layout_toEndOf="@id/stopButton"/>
 
     <Button
@@ -83,6 +94,8 @@
         android:layout_alignStart="@id/startButton"
         android:layout_marginStart="235dp"
         android:layout_marginTop="-583dp"
+        android:backgroundTint="@color/blur"
+        android:textColor="@android:color/white"
         android:text="Change Mode" />
 
 </RelativeLayout>

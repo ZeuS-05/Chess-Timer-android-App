@@ -3,10 +3,17 @@ package com.example.chesstimerappproject;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,8 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int TIMER_OPTION_TWO = 5 * 60 * 1000;  // 5 minutes in milliseconds
 
     private TextView timer1, timer2;
-    private Button player1Button, player2Button;
-    private Button startButton, stopButton, resetButton, changeModeButton;
+    private Button stopButton;
+    private Button resetButton;
+    private Spinner changeModeSpinner;
 
     private Handler handler = new Handler();
     private boolean isPlayer1Turn = true;
@@ -56,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
         timer1 = findViewById(R.id.timer1);
         timer2 = findViewById(R.id.timer2);
-        player1Button = findViewById(R.id.player1Button);
-        player2Button = findViewById(R.id.player2Button);
-        startButton = findViewById(R.id.startButton);
+        Button player1Button = findViewById(R.id.player1Button);
+        Button player2Button = findViewById(R.id.player2Button);
+        Button startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
         resetButton = findViewById(R.id.resetButton);
-        changeModeButton = findViewById(R.id.changeModeButton);
+        changeModeSpinner = findViewById(R.id.changeModeSpinner);
 
         // Initialize isTimerRunning to false
         isTimerRunning = false;
@@ -122,20 +130,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        changeModeButton.setOnClickListener(new View.OnClickListener() {
+        // Set up the spinner for change mode
+        List<String> modeOptions = new ArrayList<>();
+        modeOptions.add("Blitz Mode"); // TIMER_OPTION_ONE
+        modeOptions.add("Rapid Mode"); // TIMER_OPTION_TWO
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, modeOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        changeModeSpinner.setAdapter(adapter);
+
+        changeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                // Toggle between timer options
-                if (player1Time == TIMER_OPTION_ONE) {
-                    updateTimerValues(TIMER_OPTION_TWO);
-                } else {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedOption = (String) parent.getItemAtPosition(position);
+
+                if (selectedOption.equals("Blitz Mode")) {
                     updateTimerValues(TIMER_OPTION_ONE);
+                } else if (selectedOption.equals("Rapid Mode")) {
+                    updateTimerValues(TIMER_OPTION_TWO);
                 }
+
                 if (isTimerRunning) {
                     isTimerRunning = false;
                     handler.removeCallbacks(timerRunnable);
                     handler.postDelayed(timerRunnable, 100); // Start the timer with updated values
                 }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
             }
         });
     }
@@ -146,9 +171,10 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Choose an option:")
                 .setPositiveButton("Restart", (dialog, which) -> resetTimers())
                 .setNegativeButton("Change Mode", (dialog, which) -> {
-                    if (player1Time == TIMER_OPTION_ONE) {
+                    String selectedOption = (String) changeModeSpinner.getSelectedItem();
+                    if (selectedOption.equals("Blitz")) {
                         updateTimerValues(TIMER_OPTION_TWO);
-                    } else {
+                    } else if (selectedOption.equals("Rapid")) {
                         updateTimerValues(TIMER_OPTION_ONE);
                     }
                     resetTimers();
@@ -159,13 +185,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void resetTimers() {
         // Reset timer values to the default for both players
-        if (player1Time == TIMER_OPTION_ONE || player2Time == TIMER_OPTION_ONE) {
-            player1Time = TIMER_OPTION_ONE;
-            player2Time = TIMER_OPTION_ONE;
-        } else {
-            player1Time = TIMER_OPTION_TWO;
-            player2Time = TIMER_OPTION_TWO;
-        }
+        player1Time = TIMER_OPTION_ONE;
+        player2Time = TIMER_OPTION_ONE;
+
         // Update timer text views
         updateTimerText();
 

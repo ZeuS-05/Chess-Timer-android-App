@@ -10,12 +10,12 @@
         android:id="@+id/timer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:rotation="180"
         android:text="10:00"
-        android:textSize="30sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="250dp"
         android:textColor="@android:color/black"
-        android:rotation="180"/>
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/timer2"
@@ -29,32 +29,31 @@
 
     <Button
         android:id="@+id/player1Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Player 1"
+        android:layout_width="400dp"
+        android:layout_height="180dp"
         android:layout_below="@id/timer1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:rotation="180"/>
+        android:layout_marginTop="-224dp"
+        android:rotation="180"
+        android:text="Player 1" />
 
     <Button
         android:id="@+id/player2Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="400dp"
+        android:layout_height="180dp"
         android:text="Player 2"
         android:layout_below="@id/timer2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"/>
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start"
         android:layout_below="@id/player2Button"
-        android:layout_marginTop="120dp"
-        android:layout_marginEnd="10dp"
-        android:layout_toStartOf="@id/stopButton"/>
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="12dp"
+        android:layout_toStartOf="@id/stopButton"
+        android:text="Start" />
 
     <Button
         android:id="@+id/stopButton"
@@ -62,7 +61,8 @@
         android:layout_height="wrap_content"
         android:text="Stop"
         android:layout_below="@id/player2Button"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="12dp"
         android:layout_centerHorizontal="true"/>
 
     <Button
@@ -71,18 +71,18 @@
         android:layout_height="wrap_content"
         android:text="Reset"
         android:layout_below="@id/player2Button"
-        android:layout_marginTop="120dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="12dp"
         android:layout_toEndOf="@id/stopButton"/>
 
     <Button
         android:id="@+id/changeModeButton"
-        android:layout_width="wrap_content"
+        android:layout_width="94dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/startButton"
         android:layout_alignStart="@id/startButton"
-        android:layout_marginStart="219dp"
-        android:layout_marginTop="-567dp"
+        android:layout_marginStart="235dp"
+        android:layout_marginTop="-583dp"
         android:text="Change Mode" />
 
 </RelativeLayout>

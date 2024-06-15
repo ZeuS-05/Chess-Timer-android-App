@@ -172,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Restart", (dialog, which) -> resetTimers())
                 .setNegativeButton("Change Mode", (dialog, which) -> {
                     String selectedOption = (String) changeModeSpinner.getSelectedItem();
-                    if (selectedOption.equals("Blitz")) {
+                    if (selectedOption.equals("Blitz Mode")) {
                         updateTimerValues(TIMER_OPTION_TWO);
-                    } else if (selectedOption.equals("Rapid")) {
+                    } else if (selectedOption.equals("Rapid Mode")) {
                         updateTimerValues(TIMER_OPTION_ONE);
                     }
                     resetTimers();

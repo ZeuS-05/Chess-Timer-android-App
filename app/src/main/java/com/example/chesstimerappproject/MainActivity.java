@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int TIMER_OPTION_CUSTOM = 0;           // Custom timer
 
     private TextView timer1, timer2;
-    private Button stopButton;
     private Spinner changeModeSpinner;
     private EditText customTimeInput;
     private final Handler handler = new Handler();
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         Button player1Button = findViewById(R.id.player1Button);
         Button player2Button = findViewById(R.id.player2Button);
         Button startButton = findViewById(R.id.startButton);
-        stopButton = findViewById(R.id.stopButton);
+        Button stopButton = findViewById(R.id.stopButton);
         Button resetButton = findViewById(R.id.resetButton);
         changeModeSpinner = findViewById(R.id.changeModeSpinner);
         customTimeInput = findViewById(R.id.customTimeInput);
@@ -153,9 +152,7 @@ public class MainActivity extends AppCompatActivity {
                 String selectedOption = (String) parent.getItemAtPosition(position);
 
                 customTimeInput.setVisibility(View.GONE);
-                resetButton.setVisibility(View.VISIBLE);
-                startButton.setVisibility(View.VISIBLE);
-                stopButton.setVisibility(View.VISIBLE);
+                setButtonVisibility(View.VISIBLE);
 
                 switch (selectedOption) {
                     case "Blitz Mode":
@@ -165,11 +162,8 @@ public class MainActivity extends AppCompatActivity {
                         updateTimerValues(TIMER_OPTION_TWO);
                         break;
                     case "Custom Mode":
-                        resetButton.setVisibility(View.GONE);
-                        startButton.setVisibility(View.GONE);
-                        stopButton.setVisibility(View.GONE);
+                        setButtonVisibility(View.GONE);
                         customTimeInput.setVisibility(View.VISIBLE); // Show custom time input
-
                         break;
                 }
 
@@ -191,14 +185,23 @@ public class MainActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     updateCustomTime();
-                    resetButton.setVisibility(View.VISIBLE);
-                    startButton.setVisibility(View.VISIBLE);
-                    stopButton.setVisibility(View.VISIBLE);
+                    setButtonVisibility(View.VISIBLE);
                     return true;
                 }
                 return false;
             }
         });
+    }
+
+
+    private void setButtonVisibility(int visibility) {
+        Button resetButton = findViewById(R.id.resetButton);
+        Button startButton = findViewById(R.id.startButton);
+        Button stopButton = findViewById(R.id.stopButton);
+
+        resetButton.setVisibility(visibility);
+        startButton.setVisibility(visibility);
+        stopButton.setVisibility(visibility);
     }
 
     private void showWinDialog(String winner) {
@@ -224,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         String selectedOption = (String) changeModeSpinner.getSelectedItem();
         switch (selectedOption) {
             case "Custom Mode":
+                setButtonVisibility(View.GONE);
                 customTimeInput.setVisibility(View.VISIBLE);
                 break;
             case "Blitz Mode":
@@ -238,9 +242,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Update timer text views
         updateTimerText();
-
-        // Hide custom time input if it's currently visible
-        stopButton.setVisibility(View.VISIBLE);
 
         // Stop the timer if running
         if (isTimerRunning) {
@@ -257,16 +258,15 @@ public class MainActivity extends AppCompatActivity {
                 player1Time = (long) customMinutes * 60 * 1000;
                 player2Time = (long) customMinutes * 60 * 1000;
             } catch (NumberFormatException e) {
-                // Handle invalid input (non-numeric)
+                // Handle invalid input (non-numeric) - fallback to defaults
                 player1Time = TIMER_OPTION_ONE;
                 player2Time = TIMER_OPTION_ONE;
             }
         } else {
-            // Handle empty input
+            // Handle empty input - fallback to defaults
             player1Time = TIMER_OPTION_ONE;
             player2Time = TIMER_OPTION_ONE;
         }
-
         // Update timer text views
         updateTimerText();
 

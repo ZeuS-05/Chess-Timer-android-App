@@ -7,84 +7,94 @@
     android:background="@drawable/chessbackground"
     tools:context=".MainActivity">
 
+    <View
+        android:id="@+id/horizontal_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_centerVertical="true"
+        android:visibility="visible"
+        android:backgroundTint="@color/blur"/> <!-- imaginary line -->
+
     <TextView
         android:id="@+id/timer1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:rotation="180"
-        android:text="@string/_10_00"
+        android:layout_above="@id/horizontal_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="250dp"
+        android:layout_marginBottom="15dp"
+        android:text="@string/_10_00"
         android:textColor="@android:color/white"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:rotation="180"/> <!-- timer for player 1 -->
 
     <TextView
         android:id="@+id/timer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/_10_00"
-        android:textSize="30sp"
+        android:layout_below="@id/horizontal_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="300dp"
-        android:textColor="@android:color/white"/>
+        android:layout_marginTop="15dp"
+        android:text="@string/_10_00"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" /> <!-- timer for player 2 -->
 
     <Button
         android:id="@+id/player1Button"
-        android:layout_width="400dp"
-        android:layout_height="180dp"
-        android:layout_below="@id/timer1"
+        android:layout_width="450dp"
+        android:layout_height="275dp"
+        android:layout_above="@id/horizontal_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-224dp"
-        android:rotation="180"
+        android:layout_marginBottom="55dp"
+        android:text="@string/player_1"
         android:backgroundTint="@color/blur"
+        android:textSize="80sp"
         android:textColor="@android:color/white"
-        android:text="@string/player_1" />
+        android:rotation="180"/>
 
     <Button
         android:id="@+id/player2Button"
-        android:layout_width="400dp"
-        android:layout_height="180dp"
-        android:text="@string/player_2"
-        android:layout_below="@id/timer2"
+        android:layout_width="450dp"
+        android:layout_height="275dp"
+        android:layout_below="@id/horizontal_line"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="55dp"
         android:backgroundTint="@color/blur"
-        android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true" />
+        android:textSize="80sp"
+        android:text="@string/player_2"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/player2Button"
-        android:layout_marginTop="21dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="@color/blur"
-        android:textColor="@android:color/white"
+        android:layout_marginTop="800dp"
+        android:layout_marginEnd="61dp"
         android:layout_toStartOf="@id/stopButton"
-        android:text="@string/start" />
+        android:backgroundTint="@color/blur"
+        android:text="@string/start"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/stopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/stop"
-        android:layout_below="@id/player2Button"
-        android:layout_marginTop="21dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="800dp"
         android:layout_marginEnd="12dp"
         android:backgroundTint="@color/blur"
-        android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true"/>
+        android:text="@string/stop"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/resetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/reset"
-        android:layout_below="@id/player2Button"
-        android:layout_marginTop="21dp"
+        android:layout_marginStart="340dp"
+        android:layout_marginTop="800dp"
         android:layout_marginEnd="12dp"
         android:backgroundTint="@color/blur"
-        android:textColor="@android:color/white"
-        android:layout_toEndOf="@id/stopButton"/>
+        android:text="@string/reset"
+        android:textColor="@android:color/white" />
 
     <Spinner
         android:id="@+id/changeModeSpinner"
@@ -93,9 +103,9 @@
         android:layout_marginStart="290dp"
         android:layout_marginTop="15dp"
         android:background="@color/blur"
-        android:popupBackground="@layout/spinner_dropdown_background"
         android:padding="2dp"
-        android:textColor="@android:color/white"/>
+        android:popupBackground="@layout/spinner_dropdown_background"
+        android:textColor="@android:color/white" />
 
     <EditText
         android:id="@+id/customTimeInput"

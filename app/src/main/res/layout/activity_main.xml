@@ -7,7 +7,6 @@
     android:background="@drawable/chessbackground"
     tools:context=".MainActivity">
 
-
     <TextView
         android:id="@+id/timer1"
         android:layout_width="wrap_content"
@@ -89,12 +88,12 @@
 
     <Spinner
         android:id="@+id/changeModeSpinner"
-        android:layout_width="97dp"
-        android:layout_height="wrap_content"
+        android:layout_width="83dp"
+        android:layout_height="38dp"
         android:layout_marginStart="290dp"
         android:layout_marginTop="15dp"
-        android:backgroundTint="@color/white"
-        android:text="@string/mode" />
-
-
+        android:background="@color/blur"
+        android:padding="2dp"
+        android:popupBackground="@layout/spinner_dropdown_background"
+        android:textColor="@android:color/white" />
 </RelativeLayout>

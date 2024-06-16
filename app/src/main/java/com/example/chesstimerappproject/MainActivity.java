@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         modeOptions.add("Rapid Mode"); // TIMER_OPTION_TWO
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, modeOptions);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                this, R.layout.spinner_item, modeOptions);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         changeModeSpinner.setAdapter(adapter);
 
         changeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

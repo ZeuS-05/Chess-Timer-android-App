@@ -203,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void setButtonVisibility(int visibility) {
         Button resetButton = findViewById(R.id.resetButton);
         Button startButton = findViewById(R.id.startButton);
@@ -268,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
                 player1Time = (long) customMinutes * 60 * 1000;
                 player2Time = (long) customMinutes * 60 * 1000;
             } catch (NumberFormatException e) {
-                BlitzMode();
+                BlitzMode(); //default
             }
         } else {
             BlitzMode();

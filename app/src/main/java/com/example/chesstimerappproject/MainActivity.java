@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-
     private static final int TIMER_OPTION_ONE = 10 * 60 * 1000; // 10 minutes in milliseconds
     private static final int TIMER_OPTION_TWO = 5 * 60 * 1000;  // 5 minutes in milliseconds
     private static final int TIMER_OPTION_CUSTOM = 0;           // Custom timer
@@ -60,6 +59,18 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(this, 1000);
         }
     };
+    public void CustomMode() {
+        setButtonVisibility(View.GONE);
+        customTimeInput.setVisibility(View.VISIBLE);
+    }
+
+    public void BlitzMode(){
+        updateTimerValues(TIMER_OPTION_ONE);
+    }
+
+    public void RapidMode(){
+        updateTimerValues(TIMER_OPTION_TWO);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,14 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (selectedOption) {
                     case "Blitz Mode":
-                        updateTimerValues(TIMER_OPTION_ONE);
+                        BlitzMode();
                         break;
                     case "Rapid Mode":
-                        updateTimerValues(TIMER_OPTION_TWO);
+                        RapidMode();
                         break;
                     case "Custom Mode":
-                        setButtonVisibility(View.GONE);
-                        customTimeInput.setVisibility(View.VISIBLE); // Show custom time input
+                        CustomMode();
                         break;
                 }
 
@@ -212,9 +222,12 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("Change Mode", (dialog, which) -> {
                     String selectedOption = (String) changeModeSpinner.getSelectedItem();
                     if (selectedOption.equals("Blitz Mode")) {
-                        updateTimerValues(TIMER_OPTION_TWO);
+                        BlitzMode();
+                    }
+                    if (selectedOption.equals("Custom Mode")) {
+                        CustomMode();
                     } else if (selectedOption.equals("Rapid Mode")) {
-                        updateTimerValues(TIMER_OPTION_ONE);
+                        RapidMode();
                     }
                     resetTimers();
                 })
@@ -227,16 +240,13 @@ public class MainActivity extends AppCompatActivity {
         String selectedOption = (String) changeModeSpinner.getSelectedItem();
         switch (selectedOption) {
             case "Custom Mode":
-                setButtonVisibility(View.GONE);
-                customTimeInput.setVisibility(View.VISIBLE);
+                CustomMode();
                 break;
             case "Blitz Mode":
-                player1Time = TIMER_OPTION_ONE;
-                player2Time = TIMER_OPTION_ONE;
+                BlitzMode();
                 break;
             case "Rapid Mode":
-                player1Time = TIMER_OPTION_TWO;
-                player2Time = TIMER_OPTION_TWO;
+                RapidMode();
                 break;
         }
 
@@ -258,14 +268,10 @@ public class MainActivity extends AppCompatActivity {
                 player1Time = (long) customMinutes * 60 * 1000;
                 player2Time = (long) customMinutes * 60 * 1000;
             } catch (NumberFormatException e) {
-                // Handle invalid input (non-numeric) - fallback to defaults
-                player1Time = TIMER_OPTION_ONE;
-                player2Time = TIMER_OPTION_ONE;
+                BlitzMode();
             }
         } else {
-            // Handle empty input - fallback to defaults
-            player1Time = TIMER_OPTION_ONE;
-            player2Time = TIMER_OPTION_ONE;
+            BlitzMode();
         }
         // Update timer text views
         updateTimerText();

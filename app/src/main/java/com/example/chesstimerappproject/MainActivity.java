@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -211,14 +212,18 @@ public class MainActivity extends AppCompatActivity {
     private void resetTimers() {
         // Reset timer values to the default for both players
         String selectedOption = (String) changeModeSpinner.getSelectedItem();
-        if (selectedOption.equals("Custom Mode")) {
-            updateCustomTime();
-        } else if (selectedOption.equals("Blitz Mode")) {
-            player1Time = TIMER_OPTION_ONE;
-            player2Time = TIMER_OPTION_ONE;
-        } else if (selectedOption.equals("Rapid Mode")) {
-            player1Time = TIMER_OPTION_TWO;
-            player2Time = TIMER_OPTION_TWO;
+        switch (selectedOption) {
+            case "Custom Mode":
+                customTimeInput.setVisibility(View.VISIBLE);
+                break;
+            case "Blitz Mode":
+                player1Time = TIMER_OPTION_ONE;
+                player2Time = TIMER_OPTION_ONE;
+                break;
+            case "Rapid Mode":
+                player1Time = TIMER_OPTION_TWO;
+                player2Time = TIMER_OPTION_TWO;
+                break;
         }
 
         // Update timer text views
@@ -299,8 +304,9 @@ public class MainActivity extends AppCompatActivity {
     private String formatTime(long timeInMillis) {
         int minutes = (int) (timeInMillis / 1000) / 60;
         int seconds = (int) (timeInMillis / 1000) % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        return String.format(Locale.ROOT, "%d:%02d", minutes, seconds);
     }
+
 
     @Override
     protected void onDestroy() {

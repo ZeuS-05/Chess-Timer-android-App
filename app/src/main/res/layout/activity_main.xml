@@ -88,12 +88,26 @@
 
     <Spinner
         android:id="@+id/changeModeSpinner"
-        android:layout_width="83dp"
-        android:layout_height="38dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="290dp"
         android:layout_marginTop="15dp"
         android:background="@color/blur"
-        android:padding="2dp"
         android:popupBackground="@layout/spinner_dropdown_background"
-        android:textColor="@android:color/white" />
+        android:padding="2dp"
+        android:textColor="@android:color/white"/>
+
+    <EditText
+        android:id="@+id/customTimeInput"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:hint="@string/custom_time_min"
+        android:background="@color/blur"
+        android:inputType="number"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:importantForAutofill="no"
+        android:autofillHints="Custom Time"
+        tools:targetApi="o"/>
 </RelativeLayout>

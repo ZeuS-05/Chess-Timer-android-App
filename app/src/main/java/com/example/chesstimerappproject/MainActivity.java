@@ -28,17 +28,15 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView timer1, timer2;
     private Button stopButton;
-    private Button resetButton;
     private Spinner changeModeSpinner;
     private EditText customTimeInput;
-
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private boolean isPlayer1Turn = true;
     private long player1Time = TIMER_OPTION_ONE; // Default timer option 1
     private long player2Time = TIMER_OPTION_ONE; // Default timer option 1
     private boolean isTimerRunning = false;
 
-    private Runnable timerRunnable = new Runnable() {
+    private final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             if (isPlayer1Turn) {
@@ -75,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Button player2Button = findViewById(R.id.player2Button);
         Button startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
-        resetButton = findViewById(R.id.resetButton);
+        Button resetButton = findViewById(R.id.resetButton);
         changeModeSpinner = findViewById(R.id.changeModeSpinner);
         customTimeInput = findViewById(R.id.customTimeInput);
 
@@ -145,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
         modeOptions.add("Custom Mode"); // TIMER_OPTION_CUSTOM
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, R.layout.spinner_item, modeOptions);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
+                this, android.R.layout.simple_spinner_item, modeOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         changeModeSpinner.setAdapter(adapter);
 
         changeModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -154,14 +152,25 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedOption = (String) parent.getItemAtPosition(position);
 
-                customTimeInput.setVisibility(View.GONE); // Hide custom time input by default
+                customTimeInput.setVisibility(View.GONE);
+                resetButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(View.VISIBLE);
 
-                if (selectedOption.equals("Blitz Mode")) {
-                    updateTimerValues(TIMER_OPTION_ONE);
-                } else if (selectedOption.equals("Rapid Mode")) {
-                    updateTimerValues(TIMER_OPTION_TWO);
-                } else if (selectedOption.equals("Custom Mode")) {
-                    customTimeInput.setVisibility(View.VISIBLE); // Show custom time input
+                switch (selectedOption) {
+                    case "Blitz Mode":
+                        updateTimerValues(TIMER_OPTION_ONE);
+                        break;
+                    case "Rapid Mode":
+                        updateTimerValues(TIMER_OPTION_TWO);
+                        break;
+                    case "Custom Mode":
+                        resetButton.setVisibility(View.GONE);
+                        startButton.setVisibility(View.GONE);
+                        stopButton.setVisibility(View.GONE);
+                        customTimeInput.setVisibility(View.VISIBLE); // Show custom time input
+
+                        break;
                 }
 
                 if (isTimerRunning) {
@@ -177,13 +186,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Handle Enter key press in customTimeInput EditText
         customTimeInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // Update timer values and hide keyboard
                     updateCustomTime();
+                    resetButton.setVisibility(View.VISIBLE);
+                    startButton.setVisibility(View.VISIBLE);
+                    stopButton.setVisibility(View.VISIBLE);
                     return true;
                 }
                 return false;
@@ -230,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         updateTimerText();
 
         // Hide custom time input if it's currently visible
-        customTimeInput.setVisibility(View.GONE);
+        stopButton.setVisibility(View.VISIBLE);
 
         // Stop the timer if running
         if (isTimerRunning) {
@@ -270,8 +280,8 @@ public class MainActivity extends AppCompatActivity {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
 
+    }
 
     private void updateTimerValues(int selectedOption) {
         switch (selectedOption) {
@@ -286,31 +296,18 @@ public class MainActivity extends AppCompatActivity {
             case TIMER_OPTION_CUSTOM:
                 updateCustomTime();
                 break;
-            default:
-                player1Time = TIMER_OPTION_ONE;
-                player2Time = TIMER_OPTION_ONE;
-                break;
         }
-        updateTimerText(); // Update the displayed timer values
+        updateTimerText();
     }
 
-    // Method to update the timer text views based on the remaining time
     private void updateTimerText() {
         timer1.setText(formatTime(player1Time));
         timer2.setText(formatTime(player2Time));
     }
 
-    // Helper method to format time from milliseconds to mm:ss
-    private String formatTime(long timeInMillis) {
-        int minutes = (int) (timeInMillis / 1000) / 60;
-        int seconds = (int) (timeInMillis / 1000) % 60;
-        return String.format(Locale.ROOT, "%d:%02d", minutes, seconds);
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacks(timerRunnable); // Remove callbacks to prevent memory leaks
+    private String formatTime(long milliseconds) {
+        int minutes = (int) (milliseconds / 1000) / 60;
+        int seconds = (int) (milliseconds / 1000) % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
     }
 }

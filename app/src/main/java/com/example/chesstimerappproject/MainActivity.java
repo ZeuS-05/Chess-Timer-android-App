@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         modeOptions.add("Custom Mode"); // TIMER_OPTION_CUSTOM
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, modeOptions);
+                this, android.R.layout.simple_spinner_dropdown_item, modeOptions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         changeModeSpinner.setAdapter(adapter);
 

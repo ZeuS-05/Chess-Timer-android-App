@@ -15,116 +15,145 @@
         android:backgroundTint="@color/blur"
         android:visibility="invisible" /> <!-- imaginary line -->
 
+    <Spinner
+        android:id="@+id/changeModeSpinner"
+        android:layout_width="140dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="340dp"
+        android:layout_above="@+id/horizontal_line"
+        android:padding="10dp"
+        android:popupBackground="@color/blur"
+        android:textSize="18sp"
+        android:gravity="center" />
 
-    <Button
-        android:id="@+id/player1Button"
-        android:layout_width="450dp"
-        android:layout_height="320dp"
-        android:layout_above="@id/horizontal_line"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
-        android:text="@string/player_1"
-        android:backgroundTint="@color/blur"
-        android:textSize="80sp"
-        android:textColor="@android:color/white"
-        android:rotation="180"
-        android:layout_centerInParent="true" /> <!-- player 1 button -->
 
-    <Button
-        android:id="@+id/player2Button"
-        android:layout_width="450dp"
-        android:layout_height="320dp"
-        android:layout_below="@id/horizontal_line"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:backgroundTint="@color/blur"
-        android:textSize="80sp"
-        android:text="@string/player_2"
-        android:textColor="@android:color/white" /> <!-- player 2 button -->
-
-    <TextView
-        android:id="@+id/timer1"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/horizontal_line"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="70dp"
-        android:text="@string/_10_00"
+        android:layout_marginBottom="25dp">
+
+        <Button
+            android:id="@+id/player1Button"
+            android:layout_width="450dp"
+            android:layout_height="320dp"
+            android:text="@string/player_1"
+            android:textStyle="bold|italic"
+            android:backgroundTint="@color/blur"
+            android:textSize="80sp"
+            android:textColor="@android:color/white"
+            android:rotation="180"
+            android:layout_centerInParent="true" /> <!-- player 1 button -->
+
+        <TextView
+            android:id="@+id/timer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"
+            android:layout_centerHorizontal="true"
+            android:rotation="180"
+            android:text="@string/_10_00"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" /> <!-- timer for player 1 -->
+
+    </RelativeLayout> <!-- player 1 -->
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/horizontal_line"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp">
+    <Button
+        android:id="@+id/player2Button"
+        android:layout_width="450dp"
+        android:layout_height="320dp"
+        android:backgroundTint="@color/blur"
+        android:textSize="80sp"
+        android:text="@string/player_2"
+        android:textStyle="bold|italic"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:rotation="180"/> <!-- timer for player 1 -->
+        android:layout_centerInParent="true" /> <!-- player 2 button -->
 
     <TextView
         android:id="@+id/timer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/horizontal_line"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:text="@string/_10_00"
         android:textColor="@android:color/white"
-        android:textSize="30sp" /> <!-- timer for player 2 -->
+        android:textSize="30sp"
+        /> <!-- timer for player 2 -->
+    </RelativeLayout> <!-- player 2 -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Start button -->
+        <!-- Stop button -->
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/black"
+            android:text="@string/stop"
+            android:textStyle="bold|italic"
+            android:textColor="@android:color/white" />
+
+        <!-- Start button -->
+        <Button
+            android:id="@+id/startButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="61dp"
+            android:layout_toStartOf="@id/stopButton"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/black"
+            android:text="@string/start"
+            android:textStyle="bold|italic"
+            android:textColor="@android:color/white" />
+
+        <!-- Reset button -->
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="61dp"
+            android:layout_toEndOf="@id/stopButton"
+            android:layout_centerVertical="true"
+            android:backgroundTint="@color/black"
+            android:text="@string/reset"
+            android:textStyle="bold|italic"
+            android:textColor="@android:color/white" />
 
 
-    <Spinner
-        android:id="@+id/changeModeSpinner"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_above="@id/horizontal_line"
-        android:layout_marginStart="240dp"
-        android:layout_marginBottom="340dp"
-        android:background="@color/blur"
-        android:padding="2dp"
-        android:popupBackground="@layout/spinner_dropdown_background"
-        android:gravity="center"/>
 
-    <EditText
-        android:id="@+id/customTimeInput"
-        android:layout_width="450dp"
-        android:layout_height="55dp"
-        android:layout_centerInParent="true"
-        android:autofillHints="Minutes"
-        android:background="@color/white"
-        android:gravity="center"
-        android:hint="@string/custom_time_min"
-        android:inputType="number"
-        android:textColorHint="@color/black"
-        android:visibility="invisible" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/horizontal_line"
-        android:layout_toStartOf="@id/stopButton"
-        android:layout_marginTop="-30dp"
-        android:layout_marginEnd="61dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/start"
-        android:textColor="@android:color/white" /> <!-- Start button -->
+        <EditText
+            android:id="@+id/customTimeInput"
+            android:layout_width="450dp"
+            android:layout_height="55dp"
+            android:layout_centerInParent="true"
+            android:autofillHints="Minutes"
+            android:background="@color/white"
+            android:gravity="center"
+            android:hint="@string/custom_time_min"
+            android:inputType="number"
+            android:textColorHint="@color/black"
+            android:visibility="invisible" />
 
-    <Button
-        android:id="@+id/stopButton"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/horizontal_line"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-30dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/stop"
-        android:textColor="@android:color/white" /> <!-- stop button -->
 
-    <Button
-        android:id="@+id/resetButton"
-        android:layout_width="100dp"
-        android:layout_height="60dp"
-        android:layout_below="@id/horizontal_line"
-        android:layout_toEndOf="@id/stopButton"
-        android:layout_marginTop="-30dp"
-        android:layout_marginStart="61dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/reset"
-        android:textColor="@android:color/white" /> <!-- reset button -->
+
+    </RelativeLayout> <!-- Control Buttons -->
+
+
+
 </RelativeLayout>
 
 

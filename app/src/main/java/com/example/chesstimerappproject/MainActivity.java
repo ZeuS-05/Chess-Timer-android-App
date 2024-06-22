@@ -2,7 +2,6 @@ package com.example.chesstimerappproject;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -10,8 +9,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,12 +21,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import com.example.chesstimerappproject.R;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int TIMER_OPTION_ONE = 10 * 60 * 1000; // 10 minutes in milliseconds
     private static final int TIMER_OPTION_TWO = 5 * 60 * 1000;  // 5 minutes in milliseconds
     private static final int TIMER_OPTION_CUSTOM = 0;           // Custom timer
-
+    private RadioButton radioButtonCustom, radioButtonBlitz, radioButtonRapid;
     private TextView timer1, timer2;
     private Spinner changeModeSpinner;
     private EditText customTimeInput;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private long player1Time = TIMER_OPTION_ONE; // Default timer option 1
     private long player2Time = TIMER_OPTION_ONE; // Default timer option 1
     private boolean isTimerRunning = false;
+
 
     private final Runnable timerRunnable = new Runnable() {
         @Override
@@ -59,16 +64,17 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(this, 1000);
         }
     };
+
     public void CustomMode() {
         setButtonVisibility(View.GONE);
         customTimeInput.setVisibility(View.VISIBLE);
     }
 
-    public void BlitzMode(){
+    public void BlitzMode() {
         updateTimerValues(TIMER_OPTION_ONE);
     }
 
-    public void RapidMode(){
+    public void RapidMode() {
         updateTimerValues(TIMER_OPTION_TWO);
     }
 
@@ -93,58 +99,41 @@ public class MainActivity extends AppCompatActivity {
         // Set initial timer values and update text
         updateTimerText();
 
-        player1Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isPlayer1Turn) {
-                    isPlayer1Turn = true;
-                    handler.removeCallbacks(timerRunnable);
-                    if (isTimerRunning) {
-                        handler.post(timerRunnable);
-                    }
-                }
-            }
-        });
-
-        player2Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPlayer1Turn) {
-                    isPlayer1Turn = false;
-                    handler.removeCallbacks(timerRunnable);
-                    if (isTimerRunning) {
-                        handler.post(timerRunnable);
-                    }
-                }
-            }
-        });
-
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isTimerRunning) {
-                    isTimerRunning = true;
+        player1Button.setOnClickListener(v -> {
+            if (!isPlayer1Turn) {
+                isPlayer1Turn = true;
+                handler.removeCallbacks(timerRunnable);
+                if (isTimerRunning) {
                     handler.post(timerRunnable);
                 }
             }
         });
 
-        stopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        player2Button.setOnClickListener(v -> {
+            if (isPlayer1Turn) {
+                isPlayer1Turn = false;
+                handler.removeCallbacks(timerRunnable);
                 if (isTimerRunning) {
-                    isTimerRunning = false;
-                    handler.removeCallbacks(timerRunnable);
+                    handler.post(timerRunnable);
                 }
             }
         });
 
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetTimers();
+        startButton.setOnClickListener(v -> {
+            if (!isTimerRunning) {
+                isTimerRunning = true;
+                handler.post(timerRunnable);
             }
         });
+
+        stopButton.setOnClickListener(v -> {
+            if (isTimerRunning) {
+                isTimerRunning = false;
+                handler.removeCallbacks(timerRunnable);
+            }
+        });
+
+        resetButton.setOnClickListener(v -> resetTimers());
 
         // Set up the spinner for change mode
         List<String> modeOptions = new ArrayList<>();
@@ -190,16 +179,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        customTimeInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    updateCustomTime();
-                    setButtonVisibility(View.VISIBLE);
-                    return true;
-                }
-                return false;
+        customTimeInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                updateCustomTime();
+                setButtonVisibility(View.VISIBLE);
+                return true;
             }
+            return false;
         });
     }
 
@@ -213,26 +199,51 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setVisibility(visibility);
     }
 
+    private AlertDialog dialog; // Declare dialog at the class level
+
+
+
     private void showWinDialog(String winner) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(winner)
-                .setMessage("Choose an option:")
-                .setPositiveButton("Restart", (dialog, which) -> resetTimers())
-                .setNegativeButton("Change Mode", (dialog, which) -> {
-                    String selectedOption = (String) changeModeSpinner.getSelectedItem();
-                    if (selectedOption.equals("Blitz Mode")) {
-                        BlitzMode();
-                    }
-                    if (selectedOption.equals("Custom Mode")) {
-                        CustomMode();
-                    } else if (selectedOption.equals("Rapid Mode")) {
-                        RapidMode();
-                    }
-                    resetTimers();
-                })
-                .setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss())
-                .show();
+                .setMessage("Choose an option:");
+
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_mode_selection, null);
+        builder.setView(dialogView);
+
+        radioButtonCustom = dialogView.findViewById(R.id.radioButtonCustom);
+        radioButtonBlitz = dialogView.findViewById(R.id.radioButtonBlitz);
+        radioButtonRapid = dialogView.findViewById(R.id.radioButtonRapid);
+        Button enterButton = dialogView.findViewById(R.id.enterButton);
+
+        enterButton.setOnClickListener(v -> {
+            if (radioButtonCustom.isChecked()) {
+                CustomMode();
+            } else if (radioButtonBlitz.isChecked()) {
+                BlitzMode();
+            } else if (radioButtonRapid.isChecked()) {
+                RapidMode();
+            } else {
+                Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            updateTimerText();
+
+            if (isTimerRunning) {
+                isTimerRunning = false;
+                handler.removeCallbacks(timerRunnable);
+            }
+
+            dialog.dismiss();
+        });
+
+        builder.setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        dialog = builder.create();
+        dialog.show();
     }
+
 
     private void resetTimers() {
         // Reset timer values to the default for both players
@@ -267,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 player1Time = (long) customMinutes * 60 * 1000;
                 player2Time = (long) customMinutes * 60 * 1000;
             } catch (NumberFormatException e) {
-                BlitzMode(); //default
+                BlitzMode(); // default
             }
         } else {
             BlitzMode();
@@ -285,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
     }
 
     private void updateTimerValues(int selectedOption) {

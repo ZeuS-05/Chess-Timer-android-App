@@ -8,4 +8,7 @@
     <string name="player_1">Player 1</string>
     <string name="_10_00">10:00</string>
     <string name="custom_time_min">Custom time (min)</string>
+    <string name="blitz_mode">Blitz Mode</string>
+    <string name="rapid_mode">Rapid Mode</string>
+    <string name="custom_mode">Custom Mode</string>
 </resources>

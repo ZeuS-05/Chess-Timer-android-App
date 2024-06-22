@@ -4,11 +4,12 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
+
     <TextView
         android:id="@+id/textModeSelection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Mode"
+        android:text="@string/select_mode"
         android:textSize="18sp"
         android:textColor="@android:color/black"
         android:textStyle="bold"
@@ -24,7 +25,7 @@
             android:id="@+id/radioButtonBlitz"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Blitz Mode"
+            android:text="@string/blitz_mode"
             android:textSize="16sp"
             android:padding="8dp"
             android:checked="false" />
@@ -34,21 +35,19 @@
             android:id="@+id/radioButtonRapid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rapid Mode"
+            android:text="@string/rapid_mode"
             android:textSize="16sp"
             android:padding="8dp"
-            android:checked="false"
-            android:layout_below="@+id/radioButtonBlitz" />
+            android:checked="false" />
 
         <RadioButton
             android:id="@+id/radioButtonCustom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Custom Mode"
+            android:text="@string/custom_mode"
             android:textSize="16sp"
             android:padding="8dp"
-            android:checked="false"
-            android:layout_below="@+id/radioButtonRapid" />
+            android:checked="false" />
 
     </RadioGroup>
 
@@ -59,11 +58,11 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="160dp"
         android:gravity="center"
-        android:text="Enter"
+        android:text="@string/enter"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-
+        android:backgroundTint="@color/blur"
         />
 
 </RelativeLayout>

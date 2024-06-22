@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,13 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import com.example.chesstimerappproject.R;
-
 
 public class MainActivity extends AppCompatActivity {
     private static final int TIMER_OPTION_ONE = 10 * 60 * 1000; // 10 minutes in milliseconds
     private static final int TIMER_OPTION_TWO = 5 * 60 * 1000;  // 5 minutes in milliseconds
     private static final int TIMER_OPTION_CUSTOM = 0;           // Custom timer
+    private AlertDialog dialog; // Declare dialog at the class level
     private RadioButton radioButtonCustom, radioButtonBlitz, radioButtonRapid;
     private TextView timer1, timer2;
     private Spinner changeModeSpinner;
@@ -37,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private long player1Time = TIMER_OPTION_ONE; // Default timer option 1
     private long player2Time = TIMER_OPTION_ONE; // Default timer option 1
     private boolean isTimerRunning = false;
-
 
     private final Runnable timerRunnable = new Runnable() {
         @Override
@@ -65,19 +62,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public void CustomMode() {
-        setButtonVisibility(View.GONE);
-        customTimeInput.setVisibility(View.VISIBLE);
-    }
-
-    public void BlitzMode() {
-        updateTimerValues(TIMER_OPTION_ONE);
-    }
-
-    public void RapidMode() {
-        updateTimerValues(TIMER_OPTION_TWO);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,56 +77,117 @@ public class MainActivity extends AppCompatActivity {
         changeModeSpinner = findViewById(R.id.changeModeSpinner);
         customTimeInput = findViewById(R.id.customTimeInput);
 
-        // Initialize isTimerRunning to false
-        isTimerRunning = false;
-
         // Set initial timer values and update text
         updateTimerText();
 
-        player1Button.setOnClickListener(v -> {
-            if (!isPlayer1Turn) {
-                isPlayer1Turn = true;
-                handler.removeCallbacks(timerRunnable);
-                if (isTimerRunning) {
-                    handler.post(timerRunnable);
-                }
-            }
-        });
+        player1Button.setOnClickListener(v -> switchPlayerTurn(true));
+        player2Button.setOnClickListener(v -> switchPlayerTurn(false));
 
-        player2Button.setOnClickListener(v -> {
-            if (isPlayer1Turn) {
-                isPlayer1Turn = false;
-                handler.removeCallbacks(timerRunnable);
-                if (isTimerRunning) {
-                    handler.post(timerRunnable);
-                }
-            }
-        });
-
-        startButton.setOnClickListener(v -> {
-            if (!isTimerRunning) {
-                isTimerRunning = true;
-                handler.post(timerRunnable);
-            }
-        });
-
-        stopButton.setOnClickListener(v -> {
-            if (isTimerRunning) {
-                isTimerRunning = false;
-                handler.removeCallbacks(timerRunnable);
-            }
-        });
-
+        startButton.setOnClickListener(v -> startTimer());
+        stopButton.setOnClickListener(v -> stopTimer());
         resetButton.setOnClickListener(v -> resetTimers());
 
+        setupModeSpinner();
 
+        customTimeInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                updateCustomTime();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void switchPlayerTurn(boolean player1Turn) {
+        isPlayer1Turn = player1Turn;
+        handler.removeCallbacks(timerRunnable);
+        if (isTimerRunning) {
+            handler.post(timerRunnable);
+        }
+    }
+
+    private void startTimer() {
+        if (!isTimerRunning) {
+            isTimerRunning = true;
+            handler.post(timerRunnable);
+        }
+    }
+
+    private void stopTimer() {
+        if (isTimerRunning) {
+            isTimerRunning = false;
+            handler.removeCallbacks(timerRunnable);
+        }
+    }
+
+    private void resetTimers() {
+        String selectedOption = (String) changeModeSpinner.getSelectedItem();
+        switch (selectedOption) {
+            case "Custom Mode":
+                CustomMode();
+                break;
+            case "Blitz Mode":
+                updateTimerValues(TIMER_OPTION_ONE);
+                break;
+            case "Rapid Mode":
+                updateTimerValues(TIMER_OPTION_TWO);
+                break;
+        }
+        updateTimerText();
+        stopTimer();
+    }
+
+    private void updateCustomTime() {
+        String customTimeString = customTimeInput.getText().toString().trim();
+
+        if (!customTimeString.isEmpty()) {
+            try {
+                int customMinutes = Integer.parseInt(customTimeString);
+                if (customMinutes > 0) {
+                    player1Time = (long) customMinutes * 60 * 1000;
+                    player2Time = (long) customMinutes * 60 * 1000;
+                    updateTimerText();
+                    customTimeInput.setVisibility(View.GONE);
+                    hideKeyboard(customTimeInput);
+                    setButtonVisibility(View.VISIBLE);
+                } else {
+                    Toast.makeText(this, "Please select a time greater than 0", Toast.LENGTH_SHORT).show();
+                    CustomMode(); // Ensure CustomMode handles visibility correctly
+                }
+            }
+
+            catch (NumberFormatException e) {
+                Toast.makeText(this, "Invalid input. Please enter a valid number", Toast.LENGTH_SHORT).show();
+                CustomMode(); // Ensure CustomMode handles visibility correctly
+            }
+        } else {
+            Toast.makeText(this, "Please enter a time", Toast.LENGTH_SHORT).show();
+            CustomMode(); // Ensure CustomMode handles visibility correctly
+        }
+    }
+
+    private void CustomMode() {
+        setButtonVisibility(View.GONE);
+        customTimeInput.setVisibility(View.VISIBLE);
+    }
+
+    private void setButtonVisibility(int visibility) {
+        Button resetButton = findViewById(R.id.resetButton);
+        Button startButton = findViewById(R.id.startButton);
+        Button stopButton = findViewById(R.id.stopButton);
+
+        resetButton.setVisibility(visibility);
+        startButton.setVisibility(visibility);
+        stopButton.setVisibility(visibility);
+    }
+
+    private void setupModeSpinner() {
         List<String> modeOptions = new ArrayList<>();
-        modeOptions.add("Blitz Mode"); // TIMER_OPTION_ONE
-        modeOptions.add("Rapid Mode"); // TIMER_OPTION_TWO
-        modeOptions.add("Custom Mode"); // TIMER_OPTION_CUSTOM
+        modeOptions.add("Blitz Mode");
+        modeOptions.add("Rapid Mode");
+        modeOptions.add("Custom Mode");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_dropdown_item, modeOptions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, modeOptions);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         changeModeSpinner.setAdapter(adapter);
 
@@ -156,10 +201,10 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (selectedOption) {
                     case "Blitz Mode":
-                        BlitzMode();
+                        updateTimerValues(TIMER_OPTION_ONE);
                         break;
                     case "Rapid Mode":
-                        RapidMode();
+                        updateTimerValues(TIMER_OPTION_TWO);
                         break;
                     case "Custom Mode":
                         CustomMode();
@@ -178,30 +223,39 @@ public class MainActivity extends AppCompatActivity {
                 // Do nothing
             }
         });
-
-        customTimeInput.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                updateCustomTime();
-                setButtonVisibility(View.VISIBLE);
-                return true;
-            }
-            return false;
-        });
     }
 
-    private void setButtonVisibility(int visibility) {
-        Button resetButton = findViewById(R.id.resetButton);
-        Button startButton = findViewById(R.id.startButton);
-        Button stopButton = findViewById(R.id.stopButton);
-
-        resetButton.setVisibility(visibility);
-        startButton.setVisibility(visibility);
-        stopButton.setVisibility(visibility);
+    private void updateTimerValues(int selectedOption) {
+        switch (selectedOption) {
+            case TIMER_OPTION_ONE:
+                player1Time = TIMER_OPTION_ONE;
+                player2Time = TIMER_OPTION_ONE;
+                break;
+            case TIMER_OPTION_TWO:
+                player1Time = TIMER_OPTION_TWO;
+                player2Time = TIMER_OPTION_TWO;
+                break;
+        }
+        updateTimerText();
     }
 
-    private AlertDialog dialog; // Declare dialog at the class level
+    private void updateTimerText() {
+        timer1.setText(formatTime(player1Time));
+        timer2.setText(formatTime(player2Time));
+    }
 
+    private String formatTime(long milliseconds) {
+        int minutes = (int) (milliseconds / 1000) / 60;
+        int seconds = (int) (milliseconds / 1000) % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+    }
 
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     private void showWinDialog(String winner) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -218,14 +272,14 @@ public class MainActivity extends AppCompatActivity {
 
         enterButton.setOnClickListener(v -> {
             if (radioButtonCustom.isChecked()) {
-                CustomMode();
                 changeModeSpinner.setSelection(2); // Select "Custom Mode" in spinner
+                CustomMode(); // Ensure CustomMode handles visibility correctly
             } else if (radioButtonBlitz.isChecked()) {
-                BlitzMode();
                 changeModeSpinner.setSelection(0); // Select "Blitz Mode" in spinner
+                updateTimerValues(TIMER_OPTION_ONE);
             } else if (radioButtonRapid.isChecked()) {
-                RapidMode();
                 changeModeSpinner.setSelection(1); // Select "Rapid Mode" in spinner
+                updateTimerValues(TIMER_OPTION_TWO);
             } else {
                 Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
                 return;
@@ -243,90 +297,8 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setNeutralButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        dialog = builder.create();
+        dialog = builder.create(); // Assign the created dialog to the class-level variable
         dialog.show();
-    }
+    }}
 
 
-
-    private void resetTimers() {
-        // Reset timer values to the default for both players
-        String selectedOption = (String) changeModeSpinner.getSelectedItem();
-        switch (selectedOption) {
-            case "Custom Mode":
-                CustomMode();
-                break;
-            case "Blitz Mode":
-                BlitzMode();
-                break;
-            case "Rapid Mode":
-                RapidMode();
-                break;
-        }
-
-        // Update timer text views
-        updateTimerText();
-
-        // Stop the timer if running
-        if (isTimerRunning) {
-            isTimerRunning = false;
-            handler.removeCallbacks(timerRunnable);
-        }
-    }
-
-    private void updateCustomTime() {
-        String customTimeString = customTimeInput.getText().toString().trim();
-        if (!customTimeString.isEmpty()) {
-            try {
-                int customMinutes = Integer.parseInt(customTimeString);
-                player1Time = (long) customMinutes * 60 * 1000;
-                player2Time = (long) customMinutes * 60 * 1000;
-            } catch (NumberFormatException e) {
-                BlitzMode(); // default
-            }
-        } else {
-            BlitzMode();
-        }
-        // Update timer text views
-        updateTimerText();
-
-        // Hide custom time input and close keyboard
-        customTimeInput.setVisibility(View.GONE);
-        hideKeyboard(customTimeInput);
-    }
-
-    private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        if (imm != null) {
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    private void updateTimerValues(int selectedOption) {
-        switch (selectedOption) {
-            case TIMER_OPTION_ONE:
-                player1Time = TIMER_OPTION_ONE;
-                player2Time = TIMER_OPTION_ONE;
-                break;
-            case TIMER_OPTION_TWO:
-                player1Time = TIMER_OPTION_TWO;
-                player2Time = TIMER_OPTION_TWO;
-                break;
-            case TIMER_OPTION_CUSTOM:
-                updateCustomTime();
-                break;
-        }
-        updateTimerText();
-    }
-
-    private void updateTimerText() {
-        timer1.setText(formatTime(player1Time));
-        timer2.setText(formatTime(player2Time));
-    }
-
-    private String formatTime(long milliseconds) {
-        int minutes = (int) (milliseconds / 1000) / 60;
-        int seconds = (int) (milliseconds / 1000) % 60;
-        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-    }
-}

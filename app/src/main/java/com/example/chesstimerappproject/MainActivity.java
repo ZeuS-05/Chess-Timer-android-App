@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         resetButton.setOnClickListener(v -> resetTimers());
 
-        // Set up the spinner for change mode
+
         List<String> modeOptions = new ArrayList<>();
         modeOptions.add("Blitz Mode"); // TIMER_OPTION_ONE
         modeOptions.add("Rapid Mode"); // TIMER_OPTION_TWO
@@ -219,10 +219,13 @@ public class MainActivity extends AppCompatActivity {
         enterButton.setOnClickListener(v -> {
             if (radioButtonCustom.isChecked()) {
                 CustomMode();
+                changeModeSpinner.setSelection(2); // Select "Custom Mode" in spinner
             } else if (radioButtonBlitz.isChecked()) {
                 BlitzMode();
+                changeModeSpinner.setSelection(0); // Select "Blitz Mode" in spinner
             } else if (radioButtonRapid.isChecked()) {
                 RapidMode();
+                changeModeSpinner.setSelection(1); // Select "Rapid Mode" in spinner
             } else {
                 Toast.makeText(this, "Please select an option", Toast.LENGTH_SHORT).show();
                 return;
@@ -243,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
         dialog = builder.create();
         dialog.show();
     }
+
 
 
     private void resetTimers() {

@@ -1,5 +1,7 @@
 package com.example.chesstimerappproject;
 
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -35,29 +37,54 @@ public class MainActivity extends AppCompatActivity {
     private long player1Time = TIMER_OPTION_ONE; // Default timer option 1
     private long player2Time = TIMER_OPTION_ONE; // Default timer option 1
     private boolean isTimerRunning = false;
+    private MediaPlayer mediaPlayer1;
+    private MediaPlayer mediaPlayer2;
 
     private final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             if (isPlayer1Turn) {
                 player1Time -= 1000;
+                updateTimerText();
+
                 if (player1Time <= 0) {
                     timer1.setText("00:00");
                     handler.removeCallbacks(this);
                     showWinDialog("Player 2 Wins!");
                     return;
                 }
-                updateTimerText();
+
+                if (player1Time <= 20000) {
+                    if (mediaPlayer1 != null && !mediaPlayer1.isPlaying()) {
+                        mediaPlayer1.start(); // Start Player 1's timer sound
+                    }
+                } else {
+                    if (mediaPlayer1 != null && mediaPlayer1.isPlaying()) {
+                        mediaPlayer1.pause(); // Pause Player 1's timer sound when it's not their turn
+                    }
+                }
             } else {
                 player2Time -= 1000;
+                updateTimerText();
+
                 if (player2Time <= 0) {
                     timer2.setText("00:00");
                     handler.removeCallbacks(this);
                     showWinDialog("Player 1 Wins!");
                     return;
                 }
-                updateTimerText();
+
+                if (player2Time <= 20000) {
+                    if (mediaPlayer2 != null && !mediaPlayer2.isPlaying()) {
+                        mediaPlayer2.start(); // Start Player 2's timer sound
+                    }
+                } else {
+                    if (mediaPlayer2 != null && mediaPlayer2.isPlaying()) {
+                        mediaPlayer2.pause(); // Pause Player 2's timer sound when it's not their turn
+                    }
+                }
             }
+
             handler.postDelayed(this, 1000);
         }
     };
@@ -76,6 +103,18 @@ public class MainActivity extends AppCompatActivity {
         Button resetButton = findViewById(R.id.resetButton);
         changeModeSpinner = findViewById(R.id.changeModeSpinner);
         customTimeInput = findViewById(R.id.customTimeInput);
+
+        // Initialize Media Players for timer sounds
+        mediaPlayer1 = MediaPlayer.create(this, R.raw.timer_p1); // Assuming timer_p1.mp3 is stored in res/raw/
+        mediaPlayer2 = MediaPlayer.create(this, R.raw.timer_p2); // Assuming timer_p2.mp3 is stored in res/raw/
+
+        // Set audio attributes for media players
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        mediaPlayer1.setAudioAttributes(audioAttributes);
+        mediaPlayer2.setAudioAttributes(audioAttributes);
 
         // Set initial timer values and update text
         updateTimerText();
@@ -103,6 +142,17 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacks(timerRunnable);
         if (isTimerRunning) {
             handler.post(timerRunnable);
+        }
+
+        // Pause or stop current player's media player
+        if (isPlayer1Turn) {
+            if (mediaPlayer2.isPlaying()) {
+                mediaPlayer2.pause();
+            }
+        } else {
+            if (mediaPlayer1.isPlaying()) {
+                mediaPlayer1.pause();
+            }
         }
     }
 
@@ -154,9 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Please select a time greater than 0", Toast.LENGTH_SHORT).show();
                     CustomMode(); // Ensure CustomMode handles visibility correctly
                 }
-            }
-
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 Toast.makeText(this, "Invalid input. Please enter a valid number", Toast.LENGTH_SHORT).show();
                 CustomMode(); // Ensure CustomMode handles visibility correctly
             }
@@ -299,6 +347,19 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = builder.create(); // Assign the created dialog to the class-level variable
         dialog.show();
-    }}
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Release media players when activity is destroyed
+        if (mediaPlayer1 != null) {
+            mediaPlayer1.release();
+            mediaPlayer1 = null;
+        }
+        if (mediaPlayer2 != null) {
+            mediaPlayer2.release();
+            mediaPlayer2 = null;
+        }
+    }
+}

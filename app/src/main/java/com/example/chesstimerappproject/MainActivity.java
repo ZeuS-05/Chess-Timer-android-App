@@ -149,9 +149,15 @@ public class MainActivity extends AppCompatActivity {
             if (mediaPlayer2.isPlaying()) {
                 mediaPlayer2.pause();
             }
+            if (mediaPlayer1 != null && !mediaPlayer1.isPlaying()) {
+                mediaPlayer1.start(); // Resume Player 1's timer sound
+            }
         } else {
             if (mediaPlayer1.isPlaying()) {
                 mediaPlayer1.pause();
+            }
+            if (mediaPlayer2 != null && !mediaPlayer2.isPlaying()) {
+                mediaPlayer2.start(); // Resume Player 2's timer sound
             }
         }
     }
@@ -167,6 +173,13 @@ public class MainActivity extends AppCompatActivity {
         if (isTimerRunning) {
             isTimerRunning = false;
             handler.removeCallbacks(timerRunnable);
+
+            // Pause current player's media player
+            if (isPlayer1Turn && mediaPlayer1.isPlaying()) {
+                mediaPlayer1.pause();
+            } else if (!isPlayer1Turn && mediaPlayer2.isPlaying()) {
+                mediaPlayer2.pause();
+            }
         }
     }
 
@@ -292,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
         timer2.setText(formatTime(player2Time));
     }
 
-    private String formatTime(long milliseconds) {
+    String formatTime(long milliseconds) {
         int minutes = (int) (milliseconds / 1000) / 60;
         int seconds = (int) (milliseconds / 1000) % 60;
         return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
